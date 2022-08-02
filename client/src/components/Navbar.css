@@ -1,0 +1,99 @@
+.navbar-navbar {
+    display: flex;
+    height: 60px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 0 20px;
+    background-color: #151515;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.5);
+}
+
+.navbar-navbar > header {
+    font-size: 24px;
+    color: #FFC700
+}
+
+.navbar-hamburger-disable {
+    width: 30px;
+    height: 30px;
+}
+.navbar-hamburger-disable::before,
+.navbar-hamburger-disable::after,
+.navbar-hamburger-disable > div {
+    content: "";
+    display: block;
+    height: 4px;
+    border-radius: 2px;
+    margin: 4px 0;
+    transition: 0.5s;
+    background-color: #FFC700;
+}
+.navbar-hamburger {
+    width: 30px;
+    height: 30px;
+}
+.navbar-hamburger::before,
+.navbar-hamburger::after,
+.navbar-hamburger > div {
+    content: "";
+    display: block;
+    height: 4px;
+    border-radius: 2px;
+    margin: 4px 0;
+    transition: transform 200ms;
+    background-color: #FFC700;
+}
+
+.navbar-hamburger:hover::before {
+    transform: translateY(8.5px) rotate(135deg);
+}
+.navbar-hamburger:hover::after {
+    transform: translateY(-8.5px) rotate(-135deg);
+}
+.navbar-hamburger:hover > div {
+    transform: scale(0)
+}
+
+.navbar-drawer-hamburger {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 60px;
+    /* background-color: red; */
+}
+.navbar-drawer-el {
+    display: flex;
+    min-width: 200px;
+    width: 15vw;
+    max-width: 800px;
+    height: 50px;
+    align-items: center;
+    padding-left: 20px;
+    font-size: 18px;
+    background-color: #151515;
+    cursor: pointer;
+    transition: background-color 150ms ease-in-out;
+}
+.navbar-drawer-el:nth-child(2) {
+    margin-right: 50px;
+}
+.navbar-drawer-el:hover {
+    background-color: #363636;
+}
+
+
+.footerbar-container {
+    display: flex;
+    width: 100%;
+    height: 60px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #151515;
+    position: fixed;
+    bottom: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
