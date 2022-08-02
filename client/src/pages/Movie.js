@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Movie.css";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -18,40 +18,45 @@ const Movie = () => {
   const [showFilterMovieModal, setShowFilterMovieModal] = useState(false);
   const [showConfirmDeleteMovieModal, setShowConfirmDeleteMovieModal] =
     useState(false);
-  if (movieList) {
-    return (
-      <div className="movie-container">
-        <Navbar>MOVIE CHECKLIST</Navbar>
-        <div className="movie-newRes">
-          <div />
-          <b>NEW</b>
-          <AddCircle
-            className="icons"
-            onClick={() => navigate("/movie-detail")}
-          />
-          <div>
-            <div
-              className="iconsButton"
-              onClick={() => {
-                setShowSortMovieModal(true);
-              }}
-            >
-              <p>Sort</p>
-              <Sort />
-            </div>
-            <div
-              className="iconsButton"
-              onClick={() => {
-                setShowFilterMovieModal(true);
-              }}
-            >
-              <p>Filter</p>
-              <FilterList />
-            </div>
+
+  useEffect(() => {
+    queryMovieList(setMovieList);
+  }, []);
+
+  return (
+    <div className="movie-container">
+      <Navbar>MOVIE CHECKLIST</Navbar>
+      <div className="movie-newRes">
+        <div />
+        <b>NEW</b>
+        <AddCircle
+          className="icons"
+          onClick={() => navigate("/movie-detail")}
+        />
+        <div>
+          <div
+            className="iconsButton"
+            onClick={() => {
+              setShowSortMovieModal(true);
+            }}
+          >
+            <p>Sort</p>
+            <Sort />
+          </div>
+          <div
+            className="iconsButton"
+            onClick={() => {
+              setShowFilterMovieModal(true);
+            }}
+          >
+            <p>Filter</p>
+            <FilterList />
           </div>
         </div>
-        <FlipMove typeName="div" className="movie-cardList">
-          {movieList.map((card) => (
+      </div>
+      <FlipMove typeName="div" className="movie-cardList">
+        {movieList &&
+          movieList.map((card) => (
             <MovieCard
               key={card.movie_id}
               card={card}
@@ -59,39 +64,28 @@ const Movie = () => {
               setShowConfirmDeleteMovieModal={setShowConfirmDeleteMovieModal}
             />
           ))}
-        </FlipMove>
-        <SortMovieModal
-          movieList={movieList}
-          setMovieList={setMovieList}
-          showSortMovieModal={showSortMovieModal}
-          setShowSortMovieModal={setShowSortMovieModal}
-        />
-        <FilterMovieModal
-          setMovieList={setMovieList}
-          showFilterMovieModal={showFilterMovieModal}
-          setShowFilterMovieModal={setShowFilterMovieModal}
-        />
-        <ConfirmDeleteMovieModal
-          movieList={movieList}
-          setMovieList={setMovieList}
-          showConfirmDeleteMovieModal={showConfirmDeleteMovieModal}
-          setShowConfirmDeleteMovieModal={setShowConfirmDeleteMovieModal}
-          selectedMovie={selectedMovie}
-        />
-      </div>
-    );
-  } else {
-    queryMovieList(setMovieList);
-    return (
-      <div className="movie-container">
-        <Navbar>RESTAURANT CHECKLIST</Navbar>
-        <div className="movie-newRes" />
-        <div className="movie-cardList">
-          <div className="movie-card-loading" />
-        </div>
-      </div>
-    );
-  }
+        {!movieList && <div className="movie-card-loading" />}
+      </FlipMove>
+      <SortMovieModal
+        movieList={movieList}
+        setMovieList={setMovieList}
+        showSortMovieModal={showSortMovieModal}
+        setShowSortMovieModal={setShowSortMovieModal}
+      />
+      <FilterMovieModal
+        setMovieList={setMovieList}
+        showFilterMovieModal={showFilterMovieModal}
+        setShowFilterMovieModal={setShowFilterMovieModal}
+      />
+      <ConfirmDeleteMovieModal
+        movieList={movieList}
+        setMovieList={setMovieList}
+        showConfirmDeleteMovieModal={showConfirmDeleteMovieModal}
+        setShowConfirmDeleteMovieModal={setShowConfirmDeleteMovieModal}
+        selectedMovie={selectedMovie}
+      />
+    </div>
+  );
 };
 
 export default Movie;

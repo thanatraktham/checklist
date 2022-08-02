@@ -32,16 +32,16 @@ const MovieDetail = () => {
   const filter = createFilterOptions();
   const labels = {
     0: "",
-    1: "1",
-    2: "2",
-    3: "3",
-    4: "4",
-    5: "5",
-    6: "6",
-    7: "7",
-    8: "8",
-    9: "9",
-    10: "10",
+    0.5: "1",
+    1: "2",
+    1.5: "3",
+    2: "4",
+    2.5: "5",
+    3: "6",
+    3.5: "7",
+    4: "8",
+    4.5: "9",
+    5: "10",
   };
 
   function handleUpdateName(newName) {
@@ -79,7 +79,7 @@ const MovieDetail = () => {
   }
   function handleUpdateRating(newrating) {
     let tempMovie = movie;
-    tempMovie.rating = newrating;
+    tempMovie.rating = newrating * 2;
     setMovie(tempMovie);
   }
   async function handleSubmitButtonClick(event, movie_id) {
@@ -240,8 +240,8 @@ const MovieDetail = () => {
                 <span>
                   <Rating
                     name="unique-rating"
-                    value={movie.rating}
-                    max={10}
+                    value={movie.rating / 2.0}
+                    precision={0.5}
                     sx={{ fontSize: 48 }}
                     onChange={(event, newValue) => {
                       handleUpdateRating(newValue);
@@ -261,7 +261,7 @@ const MovieDetail = () => {
                   />
                 </span>
                 {movie.rating !== null && (
-                  <h2>{labels[hover !== -1 ? hover : movie.rating]}</h2>
+                  <h2>{labels[hover !== -1 ? hover : movie.rating / 2.0]}</h2>
                 )}
               </span>
             </div>

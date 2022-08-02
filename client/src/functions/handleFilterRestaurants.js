@@ -1,16 +1,13 @@
+import Api from "../apis/Api";
+
 async function handleFilterRestaurants(event, location_id, setRestaurantList) {
   event.preventDefault();
-  let res = [];
   try {
-    if (location_id > 0) {
-      res = await fetch(
-        `http://localhost:5000/restaurants/filter/${location_id}`
-      );
-    } else {
-      res = await fetch(`http://localhost:5000/restaurants/`);
-    }
-    const restaurantList = await res.json();
-    setRestaurantList(restaurantList);
+    const response = await Api.get(
+      `/restaurants/${location_id > 0 ? `filter/${location_id}` : ""}`
+    );
+    setRestaurantList(response.data);
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Restaurant.css";
 import { AddCircle, FilterList, Sort } from "@mui/icons-material";
@@ -22,37 +22,41 @@ const Restaurant = () => {
     setShowConfirmDeleteRestaurantModal,
   ] = useState(false);
 
-  if (restaurantList) {
-    return (
-      <div className="restaurant-container">
-        <Navbar>RESTAURANT CHECKLIST</Navbar>
-        <div className="restaurant-newRes">
-          <div />
-          <b>NEW</b>
-          <AddCircle className="icons" onClick={() => navigate("/detail")} />
-          <div>
-            <div
-              className="iconsButton"
-              onClick={() => {
-                setShowSortRestaurantModal(true);
-              }}
-            >
-              <p>Sort</p>
-              <Sort />
-            </div>
-            <div
-              className="iconsButton"
-              onClick={() => {
-                setShowFilterRestaurantModal(true);
-              }}
-            >
-              <p>Filter</p>
-              <FilterList />
-            </div>
+  useEffect(() => {
+    queryRestaurantList(setRestaurantList);
+  }, []);
+
+  return (
+    <div className="restaurant-container">
+      <Navbar>RESTAURANT CHECKLIST</Navbar>
+      <div className="restaurant-newRes">
+        <div />
+        <b>NEW</b>
+        <AddCircle className="icons" onClick={() => navigate("/detail")} />
+        <div>
+          <div
+            className="iconsButton"
+            onClick={() => {
+              setShowSortRestaurantModal(true);
+            }}
+          >
+            <p>Sort</p>
+            <Sort />
+          </div>
+          <div
+            className="iconsButton"
+            onClick={() => {
+              setShowFilterRestaurantModal(true);
+            }}
+          >
+            <p>Filter</p>
+            <FilterList />
           </div>
         </div>
-        <FlipMove typeName="div" className="restaurant-cardList">
-          {restaurantList?.map((card, cardIndex) => (
+      </div>
+      <FlipMove typeName="div" className="restaurant-cardList">
+        {restaurantList &&
+          restaurantList.map((card, cardIndex) => (
             <RestaurantCard
               key={card.img_url}
               card={card}
@@ -63,42 +67,31 @@ const Restaurant = () => {
               }
             />
           ))}
-        </FlipMove>
-        <SortRestaurantModal
-          restaurantList={restaurantList}
-          setRestaurantList={setRestaurantList}
-          showSortRestaurantModal={showSortRestaurantModal}
-          setShowSortRestaurantModal={setShowSortRestaurantModal}
-        />
-        <FilterRestaurantModal
-          restaurantList={restaurantList}
-          setRestaurantList={setRestaurantList}
-          showFilterRestaurantModal={showFilterRestaurantModal}
-          setShowFilterRestaurantModal={setShowFilterRestaurantModal}
-        />
-        <ConfirmDeleteRestaurantModal
-          restaurantList={restaurantList}
-          setRestaurantList={setRestaurantList}
-          showConfirmDeleteRestaurantModal={showConfirmDeleteRestaurantModal}
-          setShowConfirmDeleteRestaurantModal={
-            setShowConfirmDeleteRestaurantModal
-          }
-          selectedRestaurant={selectedRestaurant}
-        />
-      </div>
-    );
-  } else {
-    queryRestaurantList(setRestaurantList);
-    return (
-      <div className="restaurant-container">
-        <Navbar>RESTAURANT CHECKLIST</Navbar>
-        <div className="restaurant-newRes" />
-        <div className="restaurant-cardList">
-          <div className="restaurant-card-loading" />
-        </div>
-      </div>
-    );
-  }
+        {!restaurantList && <div className="restaurant-card-loading" />}
+      </FlipMove>
+      <SortRestaurantModal
+        restaurantList={restaurantList}
+        setRestaurantList={setRestaurantList}
+        showSortRestaurantModal={showSortRestaurantModal}
+        setShowSortRestaurantModal={setShowSortRestaurantModal}
+      />
+      <FilterRestaurantModal
+        restaurantList={restaurantList}
+        setRestaurantList={setRestaurantList}
+        showFilterRestaurantModal={showFilterRestaurantModal}
+        setShowFilterRestaurantModal={setShowFilterRestaurantModal}
+      />
+      <ConfirmDeleteRestaurantModal
+        restaurantList={restaurantList}
+        setRestaurantList={setRestaurantList}
+        showConfirmDeleteRestaurantModal={showConfirmDeleteRestaurantModal}
+        setShowConfirmDeleteRestaurantModal={
+          setShowConfirmDeleteRestaurantModal
+        }
+        selectedRestaurant={selectedRestaurant}
+      />
+    </div>
+  );
 };
 
 export default Restaurant;

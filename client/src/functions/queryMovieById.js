@@ -1,8 +1,10 @@
+import Api from "../apis/Api";
+
 async function queryMovieById(movie_id, setMovie) {
   try {
-    const res = await fetch(`http://localhost:5000/movies/${movie_id}`);
-    const movie = await res.json();
-    setMovie(movie);
+    const response = await Api.get(`/movies/${movie_id}`);
+    setMovie(response.data);
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

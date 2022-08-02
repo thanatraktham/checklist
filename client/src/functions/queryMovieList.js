@@ -1,8 +1,10 @@
+import Api from "../apis/Api";
+
 async function queryMovieList(setMovieList) {
   try {
-    const res = await fetch("http://localhost:5000/movies");
-    const movieList = await res.json();
-    setMovieList(movieList);
+    const response = await Api.get("/movies");
+    setMovieList(response.data);
+    console.log(response);
   } catch (error) {
     console.error(error.message);
   }

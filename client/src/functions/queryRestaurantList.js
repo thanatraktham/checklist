@@ -1,8 +1,10 @@
+import Api from "../apis/Api";
+
 async function queryRestaurantList(setRestaurantList) {
   try {
-    const res = await fetch("http://localhost:5000/restaurants");
-    const restaurantList = await res.json();
-    setRestaurantList(restaurantList);
+    const response = await Api.get("/restaurants");
+    setRestaurantList(response.data);
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

@@ -1,14 +1,13 @@
+import Api from "../apis/Api";
+
 async function handleUpdateRestaurant(event, restaurant) {
   event.preventDefault();
   try {
     const { restaurant_id, location_name, ...body } = {
       ...restaurant,
     };
-    await fetch(`http://localhost:5000/restaurants/${restaurant_id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    const response = await Api.put(`/restaurants/${restaurant_id}`, body);
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

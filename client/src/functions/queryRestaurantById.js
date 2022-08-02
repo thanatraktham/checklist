@@ -1,10 +1,10 @@
+import Api from "../apis/Api";
+
 async function queryRestaurantById(restaurant_id, setRestaurant) {
   try {
-    const res = await fetch(
-      `http://localhost:5000/restaurants/${restaurant_id}`
-    );
-    const restaurant = await res.json();
-    setRestaurant(restaurant);
+    const response = await Api.get(`/restaurants/${restaurant_id}`);
+    setRestaurant(response.data);
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

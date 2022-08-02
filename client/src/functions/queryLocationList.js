@@ -1,7 +1,9 @@
+import Api from "../apis/Api";
+
 async function queryLocationList(setLocationList, filterTheater = false) {
   try {
-    const locations = await fetch("http://localhost:5000/locations");
-    let locationList = await locations.json();
+    const locations = await Api.get("/locations");
+    let locationList = locations.data;
     if (filterTheater) {
       locationList = locationList.filter((location) => location.theater);
     }

@@ -1,3 +1,5 @@
+import Api from "../apis/Api";
+
 async function handleDeleteMovie(
   event,
   movieList,
@@ -6,12 +8,11 @@ async function handleDeleteMovie(
 ) {
   event.preventDefault();
   try {
-    await fetch(`http://localhost:5000/movies/${selectedMovie.movie_id}`, {
-      method: "DELETE",
-    });
+    const response = await Api.delete(`/movies/${selectedMovie.movie_id}`);
     setMovieList(
       movieList.filter((movie) => movie.movie_id !== selectedMovie.movie_id)
     );
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

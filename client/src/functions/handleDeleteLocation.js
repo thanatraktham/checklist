@@ -1,3 +1,5 @@
+import Api from "../apis/Api";
+
 async function handleDeleteLocation(
   event,
   locationList,
@@ -6,17 +8,15 @@ async function handleDeleteLocation(
 ) {
   event.preventDefault();
   try {
-    await fetch(
-      `http://localhost:5000/locations/${selectedLocation.location_id}`,
-      {
-        method: "DELETE",
-      }
+    const response = await Api.delete(
+      `/locations/${selectedLocation.location_id}`
     );
     setLocationList(
       locationList.filter(
         (location) => location.location_id !== selectedLocation.location_id
       )
     );
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

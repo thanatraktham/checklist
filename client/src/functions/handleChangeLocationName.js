@@ -1,3 +1,5 @@
+import Api from "../apis/Api";
+
 async function handleChangeLocationName(
   newLocationName,
   locationIndex,
@@ -8,17 +10,13 @@ async function handleChangeLocationName(
   tempLocationList[locationIndex].location_name = newLocationName;
   setLocationList(tempLocationList);
   try {
-    const body = {
-      location_name: newLocationName,
-    };
-    await fetch(
-      `http://localhost:5000/locations/${tempLocationList[locationIndex].location_id}`,
+    const response = await Api.put(
+      `/locations/${tempLocationList[locationIndex].location_id}`,
       {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        location_name: newLocationName,
       }
     );
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

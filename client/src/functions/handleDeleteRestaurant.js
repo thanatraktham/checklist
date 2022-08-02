@@ -1,3 +1,5 @@
+import Api from "../apis/Api";
+
 async function handleDeleteRestaurant(
   event,
   restaurantList,
@@ -6,11 +8,8 @@ async function handleDeleteRestaurant(
 ) {
   event.preventDefault();
   try {
-    await fetch(
-      `http://localhost:5000/restaurants/${selectedRestaurant.restaurant_id}`,
-      {
-        method: "DELETE",
-      }
+    const response = await Api.delete(
+      `/restaurants/${selectedRestaurant.restaurant_id}`
     );
     setRestaurantList(
       restaurantList.filter(
@@ -18,6 +17,7 @@ async function handleDeleteRestaurant(
           restaurant.restaurant_id !== selectedRestaurant.restaurant_id
       )
     );
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

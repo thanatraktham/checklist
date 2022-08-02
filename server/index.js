@@ -10,7 +10,7 @@ app.use(express.json());
 
 //RESTAURANTS
 //get all restaurants
-app.get("/restaurants", async (req, res) => {
+app.get("/api/v1/restaurants", async (req, res) => {
   try {
     const allRestaurants = await pool.query(
       "SELECT * FROM restaurants INNER JOIN locations ON restaurants.location_id = locations.location_id"
@@ -22,7 +22,7 @@ app.get("/restaurants", async (req, res) => {
   }
 });
 //get all locations filter by location_id
-app.get("/restaurants/filter/:location_id", async (req, res) => {
+app.get("/api/v1/restaurants/filter/:location_id", async (req, res) => {
   try {
     const { location_id } = req.params;
     const allRestaurants = await pool.query(
@@ -36,7 +36,7 @@ app.get("/restaurants/filter/:location_id", async (req, res) => {
   }
 });
 //get a restaurant
-app.get("/restaurants/:restaurant_id", async (req, res) => {
+app.get("/api/v1/restaurants/:restaurant_id", async (req, res) => {
   try {
     const { restaurant_id } = req.params;
     const restaurant = await pool.query(
@@ -51,7 +51,7 @@ app.get("/restaurants/:restaurant_id", async (req, res) => {
 });
 
 //add a restaurant
-app.post("/restaurants", async (req, res) => {
+app.post("/api/v1/restaurants", async (req, res) => {
   try {
     const {
       img_url,
@@ -82,7 +82,7 @@ app.post("/restaurants", async (req, res) => {
 });
 
 //update a restaurant
-app.put("/restaurants/:restaurant_id", async (req, res) => {
+app.put("/api/v1/restaurants/:restaurant_id", async (req, res) => {
   try {
     const { restaurant_id } = req.params;
     const {
@@ -116,7 +116,7 @@ app.put("/restaurants/:restaurant_id", async (req, res) => {
 });
 
 //delete a restaurant
-app.delete("/restaurants/:restaurant_id", async (req, res) => {
+app.delete("/api/v1/restaurants/:restaurant_id", async (req, res) => {
   try {
     const { restaurant_id } = req.params;
     await pool.query("DELETE FROM restaurants WHERE restaurant_id = $1", [
@@ -131,7 +131,7 @@ app.delete("/restaurants/:restaurant_id", async (req, res) => {
 
 //MOVIES
 //get all movies
-app.get("/movies", async (req, res) => {
+app.get("/api/v1/movies", async (req, res) => {
   try {
     const allMovies = await pool.query(
       "SELECT * FROM movies INNER JOIN locations ON movies.location_id = locations.location_id ORDER BY movie_id"
@@ -143,7 +143,7 @@ app.get("/movies", async (req, res) => {
   }
 });
 //get all movies filter by movie_id
-app.get("/movies/filter/:location_id", async (req, res) => {
+app.get("/api/v1/movies/filter/:location_id", async (req, res) => {
   try {
     const { location_id } = req.params;
     const allRestaurants = await pool.query(
@@ -157,7 +157,7 @@ app.get("/movies/filter/:location_id", async (req, res) => {
   }
 });
 //get a movies by movie_id
-app.get("/movies/:movie_id", async (req, res) => {
+app.get("/api/v1/movies/:movie_id", async (req, res) => {
   try {
     const { movie_id } = req.params;
     const movie = await pool.query(
@@ -171,7 +171,7 @@ app.get("/movies/:movie_id", async (req, res) => {
   }
 });
 //add a movie
-app.post("/movies", async (req, res) => {
+app.post("/api/v1/movies", async (req, res) => {
   try {
     const {
       movie_name,
@@ -193,7 +193,7 @@ app.post("/movies", async (req, res) => {
 });
 
 //update a movie
-app.put("/movies/:movie_id", async (req, res) => {
+app.put("/api/v1/movies/:movie_id", async (req, res) => {
   try {
     const { movie_id } = req.params;
     const {
@@ -225,7 +225,7 @@ app.put("/movies/:movie_id", async (req, res) => {
   }
 });
 //delete a movie
-app.delete("/movies/:movie_id", async (req, res) => {
+app.delete("/api/v1/movies/:movie_id", async (req, res) => {
   try {
     const { movie_id } = req.params;
     await pool.query("DELETE FROM movies WHERE movie_id = $1", [movie_id]);
@@ -237,7 +237,7 @@ app.delete("/movies/:movie_id", async (req, res) => {
 });
 //LOCATIONS
 //get all locations
-app.get("/locations", async (req, res) => {
+app.get("/api/v1/locations", async (req, res) => {
   try {
     const allLocations = await pool.query(
       "SELECT * FROM locations ORDER BY location_id"
@@ -249,7 +249,7 @@ app.get("/locations", async (req, res) => {
   }
 });
 //get all locations sort by location_id desc
-app.get("/locations/desc", async (req, res) => {
+app.get("/api/v1/locations/desc", async (req, res) => {
   try {
     const allLocations = await pool.query(
       "SELECT * FROM locations ORDER BY location_id DESC"
@@ -261,7 +261,7 @@ app.get("/locations/desc", async (req, res) => {
   }
 });
 //get all locations sort by location_name
-app.get("/locations/sort/location_name", async (req, res) => {
+app.get("/api/v1/locations/sort/location_name", async (req, res) => {
   try {
     const allLocations = await pool.query(
       "SELECT * FROM locations ORDER BY location_name"
@@ -273,7 +273,7 @@ app.get("/locations/sort/location_name", async (req, res) => {
   }
 });
 //get all locations sort by location_name descending
-app.get("/locations/sort/location_name/desc", async (req, res) => {
+app.get("/api/v1/locations/sort/location_name/desc", async (req, res) => {
   try {
     const allLocations = await pool.query(
       "SELECT * FROM locations ORDER BY location_name DESC"
@@ -286,7 +286,7 @@ app.get("/locations/sort/location_name/desc", async (req, res) => {
 });
 
 //add a location
-app.post("/locations", async (req, res) => {
+app.post("/api/v1/locations", async (req, res) => {
   try {
     const { location_name } = req.body;
     const newLocation = await pool.query(
@@ -300,7 +300,7 @@ app.post("/locations", async (req, res) => {
   }
 });
 //delete a location
-app.delete("/locations/:location_id", async (req, res) => {
+app.delete("/api/v1/locations/:location_id", async (req, res) => {
   try {
     const { location_id } = req.params;
     await pool.query("DELETE FROM locations WHERE location_id = $1", [
@@ -313,7 +313,7 @@ app.delete("/locations/:location_id", async (req, res) => {
   }
 });
 //update a location name
-app.put("/locations/:location_id", async (req, res) => {
+app.put("/api/v1/locations/:location_id", async (req, res) => {
   try {
     const { location_id } = req.params;
     const { location_name } = req.body;
@@ -329,6 +329,7 @@ app.put("/locations/:location_id", async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log("server is starting on port 5000");
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`server is starting on port ${port}`);
 });

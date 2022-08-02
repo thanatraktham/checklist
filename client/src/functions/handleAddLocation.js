@@ -1,3 +1,5 @@
+import Api from "../apis/Api";
+
 async function handleAddLocation(
   event,
   locationList,
@@ -6,16 +8,12 @@ async function handleAddLocation(
 ) {
   event.preventDefault();
   try {
-    const body = { location_name: newLocationName };
-    const response = await fetch("http://localhost:5000/locations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+    const response = await Api.post("/locations", {
+      location_name: newLocationName,
     });
-    const tempLocationList = await response.json();
-    console.log(tempLocationList.rows);
+    const tempLocationList = response.data;
     setLocationList([...locationList, ...tempLocationList.rows]);
-    console.log(response);
+    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }
