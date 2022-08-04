@@ -6,8 +6,7 @@ async function handleUpdateRestaurant(event, restaurant) {
     const { restaurant_id, location_name, ...body } = {
       ...restaurant,
     };
-    const response = await Api.put(`/restaurants/${restaurant_id}`, body);
-    console.log(response.statusText);
+    await Api.put(`/restaurants/${restaurant_id}`, body);
   } catch (error) {
     console.error(error.message);
   }

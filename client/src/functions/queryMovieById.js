@@ -4,7 +4,6 @@ async function queryMovieById(movie_id, setMovie) {
   try {
     const response = await Api.get(`/movies/${movie_id}`);
     setMovie(response.data);
-    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

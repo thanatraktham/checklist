@@ -6,8 +6,7 @@ async function handleAddMovie(event, movie) {
     const { location_name, ...body } = {
       ...movie,
     };
-    const response = await Api.post("/movies", body);
-    console.log(response.statusText);
+    await Api.post("/movies", body);
   } catch (error) {
     console.error(error.message);
   }

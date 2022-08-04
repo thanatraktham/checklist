@@ -6,8 +6,7 @@ async function handleAddRestaurant(event, restaurant) {
     const { location_name, ...body } = {
       ...restaurant,
     };
-    const response = await Api.post("/restaurants", body);
-    console.log(response.statusText);
+    await Api.post("/restaurants", body);
   } catch (error) {
     console.error(error.message);
   }

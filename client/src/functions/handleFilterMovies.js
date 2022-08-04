@@ -7,7 +7,6 @@ async function handleFilterMovies(event, location_id, setMovieList) {
       `/movies/${location_id > 0 ? `filter/${location_id}` : ""}`
     );
     setMovieList(response.data);
-    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

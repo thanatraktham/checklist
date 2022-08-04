@@ -9,7 +9,6 @@ async function handleSortLocations(event, sortBy, sortOrder, setLocationList) {
       }`
     );
     setLocationList(response.data);
-    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

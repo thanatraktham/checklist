@@ -10,13 +10,9 @@ async function handleChangeLocationName(
   tempLocationList[locationIndex].location_name = newLocationName;
   setLocationList(tempLocationList);
   try {
-    const response = await Api.put(
-      `/locations/${tempLocationList[locationIndex].location_id}`,
-      {
-        location_name: newLocationName,
-      }
-    );
-    console.log(response.statusText);
+    await Api.put(`/locations/${tempLocationList[locationIndex].location_id}`, {
+      location_name: newLocationName,
+    });
   } catch (error) {
     console.error(error.message);
   }

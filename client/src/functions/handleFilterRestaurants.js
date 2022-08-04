@@ -7,7 +7,6 @@ async function handleFilterRestaurants(event, location_id, setRestaurantList) {
       `/restaurants/${location_id > 0 ? `filter/${location_id}` : ""}`
     );
     setRestaurantList(response.data);
-    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

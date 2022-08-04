@@ -6,8 +6,7 @@ async function handleUpdateMovie(event, movie) {
     const { movie_id, location_name, ...body } = {
       ...movie,
     };
-    const response = await Api.put(`/movies/${movie_id}`, body);
-    console.log(response.statusText);
+    await Api.put(`/movies/${movie_id}`, body);
   } catch (error) {
     console.error(error.message);
   }

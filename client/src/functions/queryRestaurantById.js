@@ -4,7 +4,6 @@ async function queryRestaurantById(restaurant_id, setRestaurant) {
   try {
     const response = await Api.get(`/restaurants/${restaurant_id}`);
     setRestaurant(response.data);
-    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }

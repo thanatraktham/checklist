@@ -13,7 +13,6 @@ async function handleAddLocation(
     });
     const tempLocationList = response.data;
     setLocationList([...locationList, ...tempLocationList.rows]);
-    console.log(response.statusText);
   } catch (error) {
     console.error(error.message);
   }
