@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Movie.css";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { AddCircle, FilterList, Sort } from "@mui/icons-material";
 import MovieCard from "../components/MovieCard";
-import queryMovieList from "../functions/queryMovieList";
+import queryMovies from "../functions/queryMovies";
 import SortMovieModal from "../components/SortMovieModal";
 import FlipMove from "react-flip-move";
 import FilterMovieModal from "../components/FilterMovieModal";
 import ConfirmDeleteMovieModal from "../components/ConfirmDeleteMovie";
+import { MovieContext } from "../contexts/MovieContext";
 
 const Movie = () => {
   const navigate = useNavigate();
-  const [movieList, setMovieList] = useState();
+  const { movies, setMovies } = useContext(MovieContext);
   const [selectedMovie, setSelectedMovie] = useState();
   const [showSortMovieModal, setShowSortMovieModal] = useState(false);
   const [showFilterMovieModal, setShowFilterMovieModal] = useState(false);
@@ -20,7 +21,7 @@ const Movie = () => {
     useState(false);
 
   useEffect(() => {
-    queryMovieList(setMovieList);
+    queryMovies(setMovies);
   }, []);
 
   return (
@@ -55,8 +56,8 @@ const Movie = () => {
         </div>
       </div>
       <FlipMove typeName="div" className="movie-cardList">
-        {movieList &&
-          movieList.map((card) => (
+        {movies &&
+          movies.map((card) => (
             <MovieCard
               key={card.movie_id}
               card={card}
@@ -64,22 +65,22 @@ const Movie = () => {
               setShowConfirmDeleteMovieModal={setShowConfirmDeleteMovieModal}
             />
           ))}
-        {!movieList && <div className="movie-card-loading" />}
+        {!movies && <div className="movie-card-loading" />}
       </FlipMove>
       <SortMovieModal
-        movieList={movieList}
-        setMovieList={setMovieList}
+        movies={movies}
+        setMovies={setMovies}
         showSortMovieModal={showSortMovieModal}
         setShowSortMovieModal={setShowSortMovieModal}
       />
       <FilterMovieModal
-        setMovieList={setMovieList}
+        setMovies={setMovies}
         showFilterMovieModal={showFilterMovieModal}
         setShowFilterMovieModal={setShowFilterMovieModal}
       />
       <ConfirmDeleteMovieModal
-        movieList={movieList}
-        setMovieList={setMovieList}
+        movies={movies}
+        setMovies={setMovies}
         showConfirmDeleteMovieModal={showConfirmDeleteMovieModal}
         setShowConfirmDeleteMovieModal={setShowConfirmDeleteMovieModal}
         selectedMovie={selectedMovie}

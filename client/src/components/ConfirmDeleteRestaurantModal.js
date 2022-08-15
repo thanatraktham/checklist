@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Modal } from "@mui/material";
 import "./Modal.css";
 import handleDeleteRestaurant from "../functions/handleDeleteRestaurant";
+import { RestaurantContext } from "../contexts/RestaurantContext";
 
 const ConfirmDeleteRestaurantModal = ({
-  restaurantList,
-  setRestaurantList,
   showConfirmDeleteRestaurantModal,
   setShowConfirmDeleteRestaurantModal,
   selectedRestaurant,
 }) => {
+  const { restaurants, setRestaurants } = useContext(RestaurantContext);
   return (
     <Modal
       className="modal-wrapper"
@@ -38,8 +38,8 @@ const ConfirmDeleteRestaurantModal = ({
             onClick={(event) => {
               handleDeleteRestaurant(
                 event,
-                restaurantList,
-                setRestaurantList,
+                restaurants,
+                setRestaurants,
                 selectedRestaurant
               );
               setShowConfirmDeleteRestaurantModal(false);

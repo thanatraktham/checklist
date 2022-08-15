@@ -1,6 +1,6 @@
 import Api from "../apis/Api";
 
-async function queryMovieList(setMovieList) {
+async function queryMovies(setMovieList) {
   try {
     const response = await Api.get("/movies");
     setMovieList(response.data);
@@ -9,4 +9,4 @@ async function queryMovieList(setMovieList) {
   }
 }
 
-export default queryMovieList;
+export default queryMovies;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Map, Save, Star, StarBorder } from "@mui/icons-material";
 import "./RestaurantDetail.css";
 import Navbar from "../components/Navbar";
@@ -13,17 +13,17 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import handleAddRestaurant from "../functions/handleAddRestaurant";
-import queryRestaurantById from "../functions/queryRestaurantById";
 import handleUpdateRestaurant from "../functions/handleUpdateRestaurant";
 import queryLocationList from "../functions/queryLocationList";
 import handleAddLocation from "../functions/handleAddLocation";
 import Footerbar from "../components/Footerbar";
 import getSourceFromIframeText from "../functions/getSourceFromIframeText";
 import AlertBox from "../components/AlertBox";
+import { RatingLabel } from "../constants/RatingLabel";
+import { RestaurantTags, RestaurantTagMap } from "../constants/RestaurantTags";
 
 const RestaurantDetail = () => {
-  const { restaurant_id } = useParams();
-  const [restaurant, setRestaurant] = useState();
+  const [restaurant, setRestaurant] = useState(useLocation().state?.restaurant);
   const [locationList, setLocationList] = useState([]);
   const [reload, setReload] = useState(false);
   const [hover, setHover] = useState(-1);
@@ -31,19 +31,6 @@ const RestaurantDetail = () => {
   const [alertStatus, setAlertStatus] = useState("info");
 
   const filter = createFilterOptions();
-  const labels = {
-    0: "",
-    0.5: "1",
-    1: "2",
-    1.5: "3",
-    2: "4",
-    2.5: "5",
-    3: "6",
-    3.5: "7",
-    4: "8",
-    4.5: "9",
-    5: "10",
-  };
 
   function handleUpdateName(newName) {
     let tempRestaurant = restaurant;
@@ -68,6 +55,11 @@ const RestaurantDetail = () => {
     setRestaurant(tempRestaurant);
     setReload(!reload);
   }
+  function handleUpdateTag(tag) {
+    let tempRestaurant = restaurant;
+    tempRestaurant.tag_id = tag ? tag.id : -1;
+    setRestaurant(tempRestaurant);
+  }
   function handleUpdateGoogleMapUrl(newGoogleMapUrl) {
     let tempRestaurant = restaurant;
     tempRestaurant.google_map_url = newGoogleMapUrl;
@@ -80,7 +72,7 @@ const RestaurantDetail = () => {
   }
   function handleUpdateRating(newrating) {
     let tempRestaurant = restaurant;
-    tempRestaurant.rating = newrating * 2;
+    tempRestaurant.rating = newrating;
     setRestaurant(tempRestaurant);
   }
   async function handleSubmitButtonClick(event, restaurant_id) {
@@ -112,7 +104,9 @@ const RestaurantDetail = () => {
             setAlertStatus={setAlertStatus}
           />
         </div>
-        <Navbar>{`${restaurant_id ? "EDIT" : "NEW"} RESTAURANT`}</Navbar>
+        <Navbar>{`${
+          restaurant.restaurant_id ? "EDIT" : "NEW"
+        } RESTAURANT`}</Navbar>
         <form className="detail-formContainer">
           <div className="detail-form">
             <Button onClick={() => console.log(restaurant)}>
@@ -156,11 +150,6 @@ const RestaurantDetail = () => {
             </div>
             <div>
               <BoxHeader>ที่อยู่ร้าน</BoxHeader>
-              {/* <TextInput
-                fullWidth
-                defaultValue={restaurant.location_name}
-                onChange={(event) => handleUpdateLocation(event.target.value)}
-              /> */}
               <Autocomplete
                 value={restaurant.location_name}
                 onChange={(event, newValue) => {
@@ -201,7 +190,7 @@ const RestaurantDetail = () => {
                 selectOnFocus
                 clearOnBlur
                 handleHomeEndKeys
-                id="free-solo-with-text-demo"
+                id="restaurant-location-autocomplete"
                 options={locationList}
                 getOptionLabel={(option) => {
                   // Value selected with enter, right from the input
@@ -232,6 +221,46 @@ const RestaurantDetail = () => {
                         fontFamily: "Prompt",
                       },
                     }}
+                    placeholder="Select Location"
+                    {...params}
+                  />
+                )}
+              />
+            </div>
+
+            <div>
+              <BoxHeader>Restaurant Type</BoxHeader>
+              <Autocomplete
+                id="restaurant-tag-autocomplete"
+                value={RestaurantTagMap[restaurant.tag_id]}
+                onChange={(event, newValue) => {
+                  handleUpdateTag(newValue);
+                }}
+                options={RestaurantTags}
+                getOptionLabel={(option) => {
+                  if (typeof option === "string") {
+                    return option;
+                  } else {
+                    return option.tag;
+                  }
+                }}
+                isOptionEqualToValue={(option, value) => {
+                  return RestaurantTagMap[option.id] === value;
+                }}
+                renderInput={(params) => (
+                  <TextFieldInput
+                    fullWidth
+                    size="small"
+                    sx={{
+                      svg: { color: "black" },
+                      input: {
+                        position: "relative",
+                        top: -8,
+                        color: "black",
+                        fontFamily: "Prompt",
+                      },
+                    }}
+                    placeholder="Select Tag"
                     {...params}
                   />
                 )}
@@ -291,9 +320,9 @@ const RestaurantDetail = () => {
                 <span>
                   <Rating
                     name="unique-rating"
-                    value={restaurant.rating / 2.0}
-                    precision={0.5}
-                    sx={{ fontSize: 48 }}
+                    value={restaurant.rating}
+                    max={10}
+                    sx={{ fontSize: "3vh" }}
                     onChange={(event, newValue) => {
                       handleUpdateRating(newValue);
                     }}
@@ -311,11 +340,7 @@ const RestaurantDetail = () => {
                     }
                   />
                 </span>
-                {restaurant.rating !== null && (
-                  <h2>
-                    {labels[hover !== -1 ? hover : restaurant.rating / 2.0]}
-                  </h2>
-                )}
+                <h2>{RatingLabel[hover !== -1 ? hover : restaurant.rating]}</h2>
               </span>
             </div>
           </div>
@@ -325,31 +350,30 @@ const RestaurantDetail = () => {
             <button
               className="save-button"
               style={{ marginRight: 20 }}
-              onClick={(event) => handleSubmitButtonClick(event, restaurant_id)}
+              onClick={(event) =>
+                handleSubmitButtonClick(event, restaurant.restaurant_id)
+              }
             >
               <div>
                 <Save sx={{ position: "relative", top: "1px" }} />
               </div>
-              <span>{restaurant_id ? "UPDATE" : "SAVE"}</span>
+              <span>{restaurant.restaurant_id ? "UPDATE" : "SAVE"}</span>
             </button>
           }
         />
       </div>
     );
   } else {
-    if (restaurant_id) {
-      queryRestaurantById(restaurant_id, setRestaurant);
-    } else {
-      setRestaurant({
-        img_url: "",
-        restaurant_name: "",
-        location_id: -1,
-        location_name: "",
-        restaurant_url: "",
-        rating: -1,
-        visit_date: new Date(),
-      });
-    }
+    setRestaurant({
+      img_url: "",
+      restaurant_name: "",
+      location_id: -1,
+      location_name: "",
+      restaurant_url: "",
+      rating: -1,
+      tag_id: -1,
+      visit_date: new Date(),
+    });
     queryLocationList(setLocationList);
     return <div>Loading . . .</div>;
   }

@@ -13,7 +13,7 @@ app.use(express.json());
 app.get("/api/v1/restaurants", async (req, res) => {
   try {
     const allRestaurants = await pool.query(
-      "SELECT * FROM restaurants INNER JOIN locations ON restaurants.location_id = locations.location_id"
+      "SELECT * FROM restaurants INNER JOIN locations ON restaurants.location_id = locations.location_id ORDER BY visit_date DESC"
     );
 
     res.json(allRestaurants.rows);
@@ -21,15 +21,43 @@ app.get("/api/v1/restaurants", async (req, res) => {
     console.error(error.message);
   }
 });
-//get all locations filter by location_id
-app.get("/api/v1/restaurants/filter/:location_id", async (req, res) => {
+//get all restaurants filter by location_id and tag_id
+app.get("/api/v1/restaurants/filter/:location_id/:tag_id", async (req, res) => {
   try {
-    const { location_id } = req.params;
+    const { location_id, tag_id } = req.params;
     const allRestaurants = await pool.query(
-      "SELECT * FROM restaurants INNER JOIN locations ON restaurants.location_id = locations.location_id WHERE restaurants.location_id = $1",
-      [location_id]
+      "SELECT * FROM restaurants INNER JOIN locations ON restaurants.location_id = locations.location_id WHERE restaurants.location_id = $1 AND restaurants.tag_id = $2",
+      [location_id, tag_id]
     );
-
+    res.json(allRestaurants.rows);
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+//get all restaurants filter by location_id
+app.get(
+  "/api/v1/restaurants/filter_location/:location_id",
+  async (req, res) => {
+    try {
+      const { location_id } = req.params;
+      const allRestaurants = await pool.query(
+        "SELECT * FROM restaurants INNER JOIN locations ON restaurants.location_id = locations.location_id WHERE restaurants.location_id = $1",
+        [location_id]
+      );
+      res.json(allRestaurants.rows);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+);
+//get all restaurants filter by tag_id
+app.get("/api/v1/restaurants/filter_tag/:tag_id", async (req, res) => {
+  try {
+    const { tag_id } = req.params;
+    const allRestaurants = await pool.query(
+      "SELECT * FROM restaurants WHERE restaurants.tag_id = $1",
+      [tag_id]
+    );
     res.json(allRestaurants.rows);
   } catch (error) {
     console.error(error.message);
@@ -61,9 +89,10 @@ app.post("/api/v1/restaurants", async (req, res) => {
       restaurant_url,
       visit_date,
       google_map_url,
+      tag_id,
     } = req.body;
     const newRestaurant = await pool.query(
-      "INSERT INTO restaurants (img_url, location_id, rating, restaurant_name, restaurant_url, visit_date, google_map_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      "INSERT INTO restaurants (img_url, location_id, rating, restaurant_name, restaurant_url, visit_date, google_map_url, tag_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
       [
         img_url,
         location_id,
@@ -72,6 +101,7 @@ app.post("/api/v1/restaurants", async (req, res) => {
         restaurant_url,
         visit_date,
         google_map_url,
+        tag_id,
       ]
     );
 
@@ -93,10 +123,11 @@ app.put("/api/v1/restaurants/:restaurant_id", async (req, res) => {
       restaurant_url,
       visit_date,
       google_map_url,
+      tag_id,
     } = req.body;
 
     await pool.query(
-      "UPDATE restaurants SET img_url = $1, location_id = $2, rating = $3, restaurant_name = $4, restaurant_url = $5, visit_date = $6, google_map_url = $7 WHERE restaurant_id = $8",
+      "UPDATE restaurants SET img_url = $1, location_id = $2, rating = $3, restaurant_name = $4, restaurant_url = $5, visit_date = $6, google_map_url = $7, tag_id = $8 WHERE restaurant_id = $9",
       [
         img_url,
         location_id,
@@ -105,6 +136,7 @@ app.put("/api/v1/restaurants/:restaurant_id", async (req, res) => {
         restaurant_url,
         visit_date,
         google_map_url,
+        tag_id,
         restaurant_id,
       ]
     );

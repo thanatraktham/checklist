@@ -12,11 +12,9 @@ const RootNavigation = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Restaurant />} />
-        <Route path="/movies" element={<Movie />} />
         <Route path="/detail" element={<RestaurantDetail />} />
-        <Route path="/detail/:restaurant_id" element={<RestaurantDetail />} />
+        <Route path="/movies" element={<Movie />} />
         <Route path="/movie-detail" element={<MovieDetail />} />
-        <Route path="/movie-detail/:movie_id" element={<MovieDetail />} />
         <Route path="/locations" element={<Location />} />
         <Route path="/about" element={<About />} />
       </Routes>

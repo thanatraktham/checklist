@@ -1,12 +1,12 @@
 async function handleSortRestaurants(
   event,
   sortBy,
-  restaurantList,
-  setRestaurantList
+  restaurants,
+  setRestaurants
 ) {
   event.preventDefault();
-  let tempRestaurantList = restaurantList;
-  tempRestaurantList.sort((lhs, rhs) => {
+  let tempRestaurants = restaurants;
+  tempRestaurants.sort((lhs, rhs) => {
     switch (sortBy) {
       case "restaurant_name":
         return rhs.restaurant_name > lhs.restaurant_name ? -1 : 1;
@@ -18,7 +18,7 @@ async function handleSortRestaurants(
         return rhs.restaurnt_id - lhs.restaurant_id;
     }
   });
-  setRestaurantList(tempRestaurantList);
+  setRestaurants(tempRestaurants);
 }
 
 export default handleSortRestaurants;

@@ -30,7 +30,7 @@ const Navbar = ({ children }) => {
           sx: {
             px: 5,
             backgroundColor: "#151515",
-            color: "#FFC700",
+            color: "var(--yellow)",
           },
         }}
         anchor="left"

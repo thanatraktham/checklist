@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Restaurant.css";
 import { AddCircle, FilterList, Sort } from "@mui/icons-material";
-import queryRestaurantList from "../functions/queryRestaurantList";
+import queryRestaurants from "../functions/queryRestaurants";
 import Navbar from "../components/Navbar";
 import SortRestaurantModal from "../components/SortRestaurantModal";
 import FilterRestaurantModal from "../components/FilterRestaurantModal";
 import ConfirmDeleteRestaurantModal from "../components/ConfirmDeleteRestaurantModal";
 import RestaurantCard from "../components/RestaurantCard";
 import FlipMove from "react-flip-move";
+import { RestaurantContext } from "../contexts/RestaurantContext";
 
 const Restaurant = () => {
   const navigate = useNavigate();
-  const [restaurantList, setRestaurantList] = useState();
+  const { restaurants, setRestaurants } = useContext(RestaurantContext);
   const [selectedRestaurant, setSelectedRestaurant] = useState();
   const [showSortRestaurantModal, setShowSortRestaurantModal] = useState(false);
   const [showFilterRestaurantModal, setShowFilterRestaurantModal] =
@@ -23,7 +24,8 @@ const Restaurant = () => {
   ] = useState(false);
 
   useEffect(() => {
-    queryRestaurantList(setRestaurantList);
+    queryRestaurants(setRestaurants);
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -55,8 +57,8 @@ const Restaurant = () => {
         </div>
       </div>
       <FlipMove typeName="div" className="restaurant-cardList">
-        {restaurantList &&
-          restaurantList.map((card, cardIndex) => (
+        {restaurants &&
+          restaurants.map((card) => (
             <RestaurantCard
               key={card.img_url}
               card={card}
@@ -67,23 +69,17 @@ const Restaurant = () => {
               }
             />
           ))}
-        {!restaurantList && <div className="restaurant-card-loading" />}
+        {!restaurants && <div className="restaurant-card-loading" />}
       </FlipMove>
       <SortRestaurantModal
-        restaurantList={restaurantList}
-        setRestaurantList={setRestaurantList}
         showSortRestaurantModal={showSortRestaurantModal}
         setShowSortRestaurantModal={setShowSortRestaurantModal}
       />
       <FilterRestaurantModal
-        restaurantList={restaurantList}
-        setRestaurantList={setRestaurantList}
         showFilterRestaurantModal={showFilterRestaurantModal}
         setShowFilterRestaurantModal={setShowFilterRestaurantModal}
       />
       <ConfirmDeleteRestaurantModal
-        restaurantList={restaurantList}
-        setRestaurantList={setRestaurantList}
         showConfirmDeleteRestaurantModal={showConfirmDeleteRestaurantModal}
         setShowConfirmDeleteRestaurantModal={
           setShowConfirmDeleteRestaurantModal

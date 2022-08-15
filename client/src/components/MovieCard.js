@@ -26,7 +26,13 @@ const MovieCard = forwardRef((props, ref) => {
     <div ref={ref} className="movie-cardContainer">
       <div
         className="movie-card"
-        onClick={() => navigate(`/movie-detail/${card.movie_id}`)}
+        onClick={() =>
+          navigate(`/movie-detail`, {
+            state: {
+              movie: card,
+            },
+          })
+        }
       >
         <img src={card.movie_img_url} alt="not found" />
         <div className="movie-resHeader">

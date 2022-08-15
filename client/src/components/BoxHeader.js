@@ -5,7 +5,7 @@ const BoxHeader = ({ children }) => {
     <Divider
       textAlign="left"
       sx={{
-        color: "#FFC700",
+        color: "var(--yellow)",
         "&::before": {
           borderTop: "solid white",
         },

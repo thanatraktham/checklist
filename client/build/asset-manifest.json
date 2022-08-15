@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.d18692ab.css",
-    "main.js": "/static/js/main.ca19f685.js",
+    "main.css": "/static/css/main.8958c904.css",
+    "main.js": "/static/js/main.fdc75004.js",
     "static/media/quatier cineart.png": "/static/media/quatier cineart.065a13662007636958ae.png",
     "static/media/egv cinemas.png": "/static/media/egv cinemas.6cda41e99ccb9e564604.png",
     "static/media/paragon cineplex.png": "/static/media/paragon cineplex.619984cb18d62847e4bf.png",
     "index.html": "/index.html",
-    "main.d18692ab.css.map": "/static/css/main.d18692ab.css.map",
-    "main.ca19f685.js.map": "/static/js/main.ca19f685.js.map"
+    "main.8958c904.css.map": "/static/css/main.8958c904.css.map",
+    "main.fdc75004.js.map": "/static/js/main.fdc75004.js.map"
   },
   "entrypoints": [
-    "static/css/main.d18692ab.css",
-    "static/js/main.ca19f685.js"
+    "static/css/main.8958c904.css",
+    "static/js/main.fdc75004.js"
   ]
 }

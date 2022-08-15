@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FormControlLabel, Modal, Radio, RadioGroup } from "@mui/material";
 import "./Modal.css";
 import handleSortRestaurants from "../functions/handleSortRestaurants";
+import { RestaurantContext } from "../contexts/RestaurantContext";
 
 const SORTLIST = [
   { label: "restaurant name", value: "restaurant_name" },
@@ -10,11 +11,10 @@ const SORTLIST = [
 ];
 
 const SortRestaurantModal = ({
-  restaurantList,
-  setRestaurantList,
   showSortRestaurantModal,
   setShowSortRestaurantModal,
 }) => {
+  const { restaurants, setRestaurants } = useContext(RestaurantContext);
   const [sortBy, setSortBy] = useState("restaurant_id");
 
   const handleChange = (newSort) => {
@@ -68,12 +68,7 @@ const SortRestaurantModal = ({
           <button
             className="save-button"
             onClick={(event) => {
-              handleSortRestaurants(
-                event,
-                sortBy,
-                restaurantList,
-                setRestaurantList
-              );
+              handleSortRestaurants(event, sortBy, restaurants, setRestaurants);
               setShowSortRestaurantModal(false);
             }}
           >

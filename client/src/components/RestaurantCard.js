@@ -28,7 +28,13 @@ const RestaurantCard = forwardRef((props, ref) => {
     <div ref={ref} className="restaurant-cardContainer">
       <div
         className="restaurant-card"
-        onClick={() => navigate(`/detail/${card.restaurant_id}`)}
+        onClick={() =>
+          navigate(`/detail`, {
+            state: {
+              restaurant: card,
+            },
+          })
+        }
       >
         <img src={card.img_url} alt="not found" />
         <div className="restaurant-resHeader">

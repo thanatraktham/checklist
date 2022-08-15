@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Autocomplete, Modal } from "@mui/material";
 import "./Modal.css";
 import queryLocationList from "../functions/queryLocationList";
 import handleFilterRestaurants from "../functions/handleFilterRestaurants";
 import { TextFieldSelect } from "../styles/InputStyles";
+import { RestaurantTags } from "../constants/RestaurantTags";
+import { RestaurantContext } from "../contexts/RestaurantContext";
 
 const FilterRestaurantModal = ({
-  restaurantList,
-  setRestaurantList,
   showFilterRestaurantModal,
   setShowFilterRestaurantModal,
 }) => {
+  const { setRestaurants } = useContext(RestaurantContext);
   const [locationList, setlocationList] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState({
     location_id: -1,
     location_name: "",
   });
+  const [selectedTag, setSelectedTag] = useState({ id: -1, tag: "" });
 
   useEffect(() => {
     queryLocationList(setlocationList);
   }, []);
 
-  const handleChange = (newLocation) => {
+  const handleChangeLocation = (newLocation) => {
     if (newLocation) {
       setSelectedLocation(
         locationList.filter(
@@ -30,6 +32,13 @@ const FilterRestaurantModal = ({
       );
     } else {
       setSelectedLocation({ location_id: -1, location_name: "" });
+    }
+  };
+  const handleChangeTag = (newTag) => {
+    if (newTag) {
+      setSelectedTag(newTag);
+    } else {
+      setSelectedTag({ id: -1, tag: "" });
     }
   };
 
@@ -44,10 +53,10 @@ const FilterRestaurantModal = ({
       <form className="modal-container">
         <strong>Filter By</strong>
         <Autocomplete
-          id="select-locationList"
+          id="select-location-list"
           value={selectedLocation.location_name}
           onChange={(event, newValue) => {
-            handleChange(newValue);
+            handleChangeLocation(newValue);
           }}
           options={locationList.map((location) => location.location_name)}
           isOptionEqualToValue={(option, value) =>
@@ -60,6 +69,34 @@ const FilterRestaurantModal = ({
               size="small"
               sx={{ mt: 1 }}
               label="Location"
+            />
+          )}
+        />
+        <Autocomplete
+          id="select-tag-list"
+          value={selectedTag.tag}
+          onChange={(event, newValue) => {
+            handleChangeTag(newValue);
+          }}
+          options={RestaurantTags}
+          getOptionLabel={(option) => {
+            if (typeof option === "string") {
+              return option;
+            } else {
+              return option.tag;
+            }
+          }}
+          isOptionEqualToValue={(option, value) => {
+            if (typeof value === "string") return true;
+            return option.tag === value.tag;
+          }}
+          renderInput={(params) => (
+            <TextFieldSelect
+              {...params}
+              fullWidth
+              size="small"
+              sx={{ mt: 1 }}
+              label="Tag"
             />
           )}
         />
@@ -78,7 +115,8 @@ const FilterRestaurantModal = ({
               handleFilterRestaurants(
                 event,
                 selectedLocation.location_id,
-                setRestaurantList
+                selectedTag.id,
+                setRestaurants
               );
               setShowFilterRestaurantModal(false);
             }}
