@@ -12,7 +12,7 @@ const FilterRestaurantModal = ({
   setShowFilterRestaurantModal,
 }) => {
   const { setRestaurants } = useContext(RestaurantContext);
-  const [locationList, setlocationList] = useState([]);
+  const [locationList, setlocationList] = useState();
   const [selectedLocation, setSelectedLocation] = useState({
     location_id: -1,
     location_name: "",
@@ -52,26 +52,28 @@ const FilterRestaurantModal = ({
     >
       <form className="modal-container">
         <strong>Filter By</strong>
-        <Autocomplete
-          id="select-location-list"
-          value={selectedLocation.location_name}
-          onChange={(event, newValue) => {
-            handleChangeLocation(newValue);
-          }}
-          options={locationList.map((location) => location.location_name)}
-          isOptionEqualToValue={(option, value) =>
-            option.location_name === value.location_name
-          }
-          renderInput={(params) => (
-            <TextFieldSelect
-              {...params}
-              fullWidth
-              size="small"
-              sx={{ mt: 1 }}
-              label="Location"
-            />
-          )}
-        />
+        {locationList && (
+          <Autocomplete
+            id="select-location-list"
+            value={selectedLocation.location_name}
+            onChange={(event, newValue) => {
+              handleChangeLocation(newValue);
+            }}
+            options={locationList?.map((location) => location.location_name)}
+            isOptionEqualToValue={(option, value) =>
+              option.location_name === value.location_name
+            }
+            renderInput={(params) => (
+              <TextFieldSelect
+                {...params}
+                fullWidth
+                size="small"
+                sx={{ mt: 1 }}
+                label="Location"
+              />
+            )}
+          />
+        )}
         <Autocomplete
           id="select-tag-list"
           value={selectedTag.tag}
