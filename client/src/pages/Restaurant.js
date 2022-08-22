@@ -24,7 +24,16 @@ const Restaurant = () => {
   ] = useState(false);
 
   useEffect(() => {
-    queryRestaurants(setRestaurants);
+    let subscribed = true;
+    queryRestaurants().then((response) => {
+      if (subscribed) {
+        setRestaurants(response.data);
+      }
+    });
+
+    return () => {
+      subscribed = false;
+    };
     // eslint-disable-next-line
   }, []);
 

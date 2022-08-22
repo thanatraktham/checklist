@@ -1,9 +1,9 @@
 import Api from "../apis/Api";
 
-async function queryMovies(setMovieList) {
+async function queryMovies() {
   try {
     const response = await Api.get("/movies");
-    setMovieList(response.data);
+    return response;
   } catch (error) {
     console.error(error.message);
   }

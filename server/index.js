@@ -272,7 +272,7 @@ app.delete("/api/v1/movies/:movie_id", async (req, res) => {
 app.get("/api/v1/locations", async (req, res) => {
   try {
     const allLocations = await pool.query(
-      "SELECT * FROM locations ORDER BY location_id"
+      "SELECT * FROM locations ORDER BY location_name DESC"
     );
 
     res.json(allLocations.rows);

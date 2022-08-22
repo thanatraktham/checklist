@@ -1,9 +1,9 @@
 import Api from "../apis/Api";
 
-async function queryRestaurants(setRestaurants) {
+async function queryRestaurants() {
   try {
     const response = await Api.get("/restaurants");
-    setRestaurants(response.data);
+    return response;
   } catch (error) {
     console.error(error.message);
   }

@@ -21,7 +21,17 @@ const Movie = () => {
     useState(false);
 
   useEffect(() => {
-    queryMovies(setMovies);
+    let subscribed = true;
+    queryMovies().then((response) => {
+      if (subscribed) {
+        setMovies(response.data);
+      }
+    });
+
+    return () => {
+      subscribed = false;
+    };
+    // eslint-disable-next-line
   }, []);
 
   return (
