@@ -1,0 +1,88 @@
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
+import { FormControlLabel, Modal, Radio, RadioGroup } from "@mui/material";
+import "./Modal.css";
+import { RestaurantContext } from "../contexts/RestaurantContext";
+// import handleSortRestaurants from "../functions/handleSortRestaurants";
+// import { RestaurantContext } from "../contexts/RestaurantContext";
+
+const SORTLIST = [
+  { label: "restaurant name", value: "restaurant_name" },
+  { label: "rating", value: "rating" },
+  { label: "visit date", value: "visit_date" },
+];
+
+const SortRestaurantModal: FC = () => {
+  const { showSortRestaurantModal, setShowSortRestaurantModal } =
+    useContext(RestaurantContext);
+  const [sortBy, setSortBy] = useState("restaurant_id");
+
+  const handleChange = (newSort: string) => {
+    setSortBy(newSort);
+  };
+
+  return (
+    <Modal
+      className="modal-wrapper"
+      open={showSortRestaurantModal}
+      onClose={() => setShowSortRestaurantModal(false)}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <form className="modal-container">
+        <strong>Sort By</strong>
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+          defaultValue="restaurant_id"
+          name="radio-buttons-group"
+          value={sortBy}
+          onChange={(event) => handleChange(event.target.value)}
+        >
+          {SORTLIST.map((sort, sortIndex) => (
+            <FormControlLabel
+              key={sortIndex}
+              value={sort.value}
+              control={
+                <Radio
+                  sx={{
+                    color: "#FF004D",
+                    "&.Mui-checked": {
+                      color: "#FF004D",
+                    },
+                  }}
+                />
+              }
+              label={<header>{sort.label}</header>}
+            />
+          ))}
+        </RadioGroup>
+        <div className="modal-buttonContainer">
+          <button
+            className="save-button"
+            onClick={() => {
+              setShowSortRestaurantModal(false);
+            }}
+          >
+            CANCEL
+          </button>
+          <button
+            className="save-button"
+            onClick={(event) => {
+              //   handleSortRestaurants(event, sortBy, restaurants, setRestaurants);
+              setShowSortRestaurantModal(false);
+            }}
+          >
+            APPLY
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+};
+
+export default SortRestaurantModal;

@@ -68,7 +68,7 @@ const Restaurant = () => {
       <FlipMove typeName="div" className="restaurant-cardList">
         {restaurants &&
           restaurants.map((card) => (
-            <RestaurantCard
+            <RestaurantresCard
               key={card.img_url}
               card={card}
               selectedRestaurant={selectedRestaurant}

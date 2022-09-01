@@ -1,0 +1,26 @@
+.modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* background-color: red; */
+}
+.modal-container {
+  min-width: 250px;
+  width: 50%;
+  max-width: 350px;
+  padding: 20px;
+  margin-right: 20px;
+  margin-left: 20px;
+  border-radius: 5px;
+  background-color: white;
+}
+.modal-container > strong > b {
+  color: #ff004d;
+}
+.modal-buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  /* background-color: yellow; */
+}
