@@ -6,6 +6,9 @@ import "./Modal.css";
 import { TextFieldSelect } from "../styles/InputStyles";
 import { RestaurantTags } from "../constants/RestaurantTags";
 import { RestaurantContext } from "../contexts/RestaurantContext";
+import queryLocations from "../functions/queryLocations";
+import { ILocation } from "../interfaces/ILocation";
+import handleFilterRestaurants from "../functions/handleFilterRestaurants";
 
 const FilterRestaurantModal: FC = () => {
   const {
@@ -13,33 +16,45 @@ const FilterRestaurantModal: FC = () => {
     showFilterRestaurantModal,
     setShowFilterRestaurantModal,
   } = useContext(RestaurantContext);
-  const [locationList, setlocationList] = useState();
-  const [selectedLocation, setSelectedLocation] = useState({
+  const [locations, setLocations] = useState<ILocation[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<ILocation>({
     location_id: -1,
     location_name: "",
   });
-  const [selectedTag, setSelectedTag] = useState({ id: -1, tag: "" });
+  const [selectedTag, setSelectedTag] = useState({ tag_id: -1, tag_name: "" });
 
   useEffect(() => {
-    // queryLocationList(setlocationList);
+    let subscribed = true;
+    queryLocations().then((response) => {
+      if (subscribed && response) {
+        setLocations(response);
+      }
+    });
+
+    return () => {
+      subscribed = false;
+    };
+    // eslint-disable-next-line
   }, []);
 
-  //   const handleChangeLocation = (newLocation) => {
-  //     if (newLocation) {
-  //       setSelectedLocation(
-  //         locationList.filter(
-  //           (location) => location.location_name === newLocation
-  //         )[0]
-  //       );
-  //     } else {
-  //       setSelectedLocation({ location_id: -1, location_name: "" });
-  //     }
-  //   };
-  const handleChangeTag = (newTag: { id: number; tag: string } | null) => {
-    if (newTag) {
+  const handleChangeLocation = (newLocation: ILocation | null) => {
+    if (newLocation !== null) {
+      setSelectedLocation(
+        locations.find(
+          (location) => location.location_name === newLocation.location_name
+        ) || { location_id: -1, location_name: "" }
+      );
+    } else {
+      setSelectedLocation({ location_id: -1, location_name: "" });
+    }
+  };
+  const handleChangeTag = (
+    newTag: { tag_id: number; tag_name: string } | string | null
+  ) => {
+    if (newTag !== null && typeof newTag !== "string") {
       setSelectedTag(newTag);
     } else {
-      setSelectedTag({ id: -1, tag: "" });
+      setSelectedTag({ tag_id: -1, tag_name: "" });
     }
   };
 
@@ -53,31 +68,44 @@ const FilterRestaurantModal: FC = () => {
     >
       <form className="modal-container">
         <strong>Filter By</strong>
-        {/* {locationList && (
-          <Autocomplete
-            id="select-location-list"
-            value={selectedLocation.location_name}
-            onChange={(event, newValue) => {
-              handleChangeLocation(newValue);
-            }}
-            options={locationList?.map((location) => location.location_name)}
-            isOptionEqualToValue={(option, value) =>
-              option.location_name === value.location_name
+        <Autocomplete
+          id="select-location-list"
+          defaultValue={selectedLocation}
+          options={locations}
+          getOptionLabel={(option) => {
+            // Value selected with enter, right from the input
+            if (typeof option === "string") {
+              return option;
             }
-            renderInput={(params) => (
-              <TextFieldSelect
-                {...params}
-                fullWidth
-                size="small"
-                sx={{ mt: 1 }}
-                label="Location"
-              />
-            )}
-          />
-        )} */}
+            // Regular option
+            return option.location_name;
+          }}
+          isOptionEqualToValue={(option, value) => {
+            if (value) {
+              return option === value;
+            }
+            return false;
+          }}
+          renderOption={(props, option) => (
+            <li {...props}>{option.location_name}</li>
+          )}
+          onChange={(event, newValue) => {
+            handleChangeLocation(newValue);
+          }}
+          renderInput={(params) => (
+            <TextFieldSelect
+              {...params}
+              fullWidth
+              size="small"
+              sx={{ mt: 1 }}
+              label="Location"
+            />
+          )}
+        />
         <Autocomplete
           id="select-tag-list"
-          value={selectedTag}
+          // freeSolo
+          defaultValue={selectedTag}
           onChange={(event, newValue) => {
             handleChangeTag(newValue);
           }}
@@ -86,13 +114,21 @@ const FilterRestaurantModal: FC = () => {
             if (typeof option === "string") {
               return option;
             } else {
-              return option.tag;
+              return option.tag_name;
             }
           }}
-          isOptionEqualToValue={(option, value) => {
-            if (typeof value === "string") return true;
-            return option.tag === value.tag;
-          }}
+          // isOptionEqualToValue={(option, value) => {
+          //   console.log(option);
+          //   console.log(value);
+
+          //   if (value) {
+          //     return option === value;
+          //   }
+          //   return false;
+          // }}
+          renderOption={(props, option) => (
+            <li {...props}>{option.tag_name}</li>
+          )}
           renderInput={(params) => (
             <TextFieldSelect
               {...params}
@@ -114,13 +150,11 @@ const FilterRestaurantModal: FC = () => {
           </button>
           <button
             className="save-button"
-            onClick={(event) => {
-              //   handleFilterRestaurants(
-              //     event,
-              //     selectedLocation.location_id,
-              //     selectedTag.id,
-              //     setRestaurants
-              //   );
+            onClick={() => {
+              handleFilterRestaurants(
+                selectedLocation.location_id,
+                selectedTag.tag_id
+              ).then((response) => setRestaurants(response));
               setShowFilterRestaurantModal(false);
             }}
           >

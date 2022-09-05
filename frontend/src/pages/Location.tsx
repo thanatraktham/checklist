@@ -36,7 +36,16 @@ const Location = () => {
   }
 
   useEffect(() => {
-    queryLocations(setLocations);
+    let subscribed = true;
+    queryLocations().then((response) => {
+      if (subscribed && response) {
+        setLocations(response);
+      }
+    });
+
+    return () => {
+      subscribed = false;
+    };
     // eslint-disable-next-line
   }, []);
 

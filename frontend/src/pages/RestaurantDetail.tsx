@@ -1,36 +1,22 @@
-import React, {
-  Dispatch,
-  FC,
-  MouseEvent,
-  SetStateAction,
-  useState,
-} from "react";
+import { FC, MouseEvent, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Map, Save, Star, StarBorder } from "@mui/icons-material";
 import "./RestaurantDetail.css";
 import Navbar from "../components/Navbar";
 import BoxHeader from "../components/BoxHeader";
 import { TextFieldInput, TextInput } from "../styles/InputStyles";
-import {
-  AlertColor,
-  Autocomplete,
-  Button,
-  createFilterOptions,
-  Rating,
-} from "@mui/material";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-// import handleAddRestaurant from "../functions/handleAddRestaurant";
-// import handleUpdateRestaurant from "../functions/handleUpdateRestaurant";
-// import queryLocationList from "../functions/queryLocationList";
-// import handleAddLocation from "../functions/handleAddLocation";
+import { AlertColor, Autocomplete, Button, Rating } from "@mui/material";
 import AlertBox from "../components/AlertBox";
 import { RatingLabel } from "../constants/RatingLabel";
-import { RestaurantTags, RestaurantTagMap } from "../constants/RestaurantTags";
+import { RestaurantTagMap, RestaurantTags } from "../constants/RestaurantTags";
 import Footerbar from "../components/Footerbar";
 import getSourceFromIframeText from "../functions/getSourceFromIframeText";
 import { IRestaurant } from "../interfaces/IRestaurant";
 import { DatePicker } from "@mui/x-date-pickers";
 import { ILocation } from "../interfaces/ILocation";
+import queryLocations from "../functions/queryLocations";
+import handleUpdateRestaurant from "../functions/handleUpdateRestaurant";
+import handleAddRestaurant from "../functions/handleAddRestaurant";
 
 interface IUseLocation {
   state: {
@@ -38,50 +24,53 @@ interface IUseLocation {
   };
 }
 
-// interface Props {
-//   showAlert: boolean;
-//   setShowAlert: Dispatch<SetStateAction<boolean>>;
-//   alertStatus: AlertColor;
-//   setAlertStatus: Dispatch<SetStateAction<AlertColor>>;
-// }
-
 const RestaurantDetail: FC = () => {
   const location = useLocation() as unknown as IUseLocation;
   const [restaurant, setRestaurant] = useState<IRestaurant>(
-    location.state.restaurant
+    location.state?.restaurant || {
+      img_url: "",
+      restaurant_name: "",
+      location_id: -1,
+      location_name: "",
+      restaurant_url: "",
+      rating: -1,
+      tag_id: -1,
+      visit_date: new Date(),
+      google_map_url: "",
+    }
   );
-  const [locations, setLocations] = useState<ILocation[]>([
-    {
-      location_id: 10,
-      location_name: "Siam Paragon",
-    },
-    {
-      location_id: 31,
-      location_name: "สามย่าน",
-    },
-  ]);
+  const [locations, setLocations] = useState<ILocation[]>([]);
   const [reload, setReload] = useState<boolean>(false);
-  const [hover, setHover] = useState<number>(0);
+  const [hover, setHover] = useState<number>(-1);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertStatus, setAlertStatus] = useState<AlertColor>("info");
 
-  const filter = createFilterOptions();
+  useEffect(() => {
+    let subscribed = true;
+    queryLocations().then((response) => {
+      if (subscribed && response) {
+        setLocations(response);
+      }
+    });
+
+    return () => {
+      subscribed = false;
+    };
+    // eslint-disable-next-line
+  }, []);
 
   function handleUpdateName(newName: string) {
-    let tempRestaurant = restaurant;
-    tempRestaurant.restaurant_name = newName;
-    setRestaurant(tempRestaurant);
+    restaurant.restaurant_name = newName;
+    setRestaurant(restaurant);
   }
   function handleUpdateVisitDate(newDate: Date) {
-    let tempRestaurant = restaurant;
-    tempRestaurant.visit_date = new Date(newDate);
-    setRestaurant(tempRestaurant);
+    restaurant.visit_date = new Date(newDate);
+    setRestaurant(restaurant);
     setReload(!reload);
   }
   function handleUpdateImgUrl(newImgUrl: string) {
-    let tempRestaurant = restaurant;
-    tempRestaurant.img_url = newImgUrl;
-    setRestaurant(tempRestaurant);
+    restaurant.img_url = newImgUrl;
+    setRestaurant(restaurant);
   }
   function handleUpdateExistedLocation(
     newLocation:
@@ -93,34 +82,31 @@ const RestaurantDetail: FC = () => {
       | null
   ) {
     if (newLocation !== null && typeof newLocation !== "string") {
-      let tempRestaurant = restaurant;
-      tempRestaurant.location_id = newLocation.location_id;
-      tempRestaurant.location_name = newLocation.location_name;
-      setRestaurant(tempRestaurant);
+      restaurant.location_id = newLocation.location_id;
+      restaurant.location_name = newLocation.location_name;
+      setRestaurant(restaurant);
       setReload(!reload);
     }
   }
-  function handleUpdateTag(tag: { id: number; tag: string } | string | null) {
+  function handleUpdateTag(
+    tag: { tag_id: number; tag_name: string } | string | null
+  ) {
     if (tag !== null && typeof tag !== "string") {
-      let tempRestaurant = restaurant;
-      tempRestaurant.tag_id = tag.id;
-      setRestaurant(tempRestaurant);
+      restaurant.tag_id = tag.tag_id;
+      setRestaurant(restaurant);
     }
   }
   function handleUpdateGoogleMapUrl(newGoogleMapUrl: string) {
-    let tempRestaurant = restaurant;
-    tempRestaurant.google_map_url = newGoogleMapUrl;
-    setRestaurant(tempRestaurant);
+    restaurant.google_map_url = newGoogleMapUrl;
+    setRestaurant(restaurant);
   }
   function handleUpdateLocationUrl(newLocationUrl: string) {
-    let tempRestaurant = restaurant;
-    tempRestaurant.restaurant_url = newLocationUrl;
-    setRestaurant(tempRestaurant);
+    restaurant.restaurant_url = newLocationUrl;
+    setRestaurant(restaurant);
   }
   function handleUpdateRating(newrating: number) {
-    let tempRestaurant = restaurant;
-    tempRestaurant.rating = newrating;
-    setRestaurant(tempRestaurant);
+    restaurant.rating = newrating;
+    setRestaurant(restaurant);
   }
   async function handleSubmitButtonClick(
     event: MouseEvent<HTMLButtonElement>,
@@ -130,9 +116,9 @@ const RestaurantDetail: FC = () => {
     setAlertStatus("info");
     try {
       if (restaurant_id) {
-        // await handleUpdateRestaurant(event, restaurant);
+        await handleUpdateRestaurant(restaurant);
       } else {
-        // await handleAddRestaurant(event, restaurant);
+        await handleAddRestaurant(restaurant);
       }
       setAlertStatus("success");
       setTimeout(() => {
@@ -141,10 +127,6 @@ const RestaurantDetail: FC = () => {
     } catch (error) {
       setAlertStatus("error");
     }
-  }
-
-  function test(location: any) {
-    console.log(location);
   }
 
   if (restaurant) {
@@ -210,6 +192,10 @@ const RestaurantDetail: FC = () => {
                 id="restaurant-location-autocomplete"
                 freeSolo
                 options={locations}
+                defaultValue={{
+                  location_id: restaurant.location_id,
+                  location_name: restaurant.location_name || "",
+                }}
                 getOptionLabel={(option) => {
                   // Value selected with enter, right from the input
                   if (typeof option === "string") {
@@ -249,6 +235,10 @@ const RestaurantDetail: FC = () => {
               <Autocomplete
                 id="restaurant-tag-autocomplete"
                 freeSolo
+                defaultValue={{
+                  tag_id: restaurant.tag_id,
+                  tag_name: RestaurantTagMap[restaurant.tag_id] || "",
+                }}
                 onChange={(event, newValue) => {
                   handleUpdateTag(newValue);
                 }}
@@ -257,7 +247,7 @@ const RestaurantDetail: FC = () => {
                   if (typeof option === "string") {
                     return option;
                   } else {
-                    return option.tag;
+                    return option.tag_name;
                   }
                 }}
                 isOptionEqualToValue={(option, value) => {
@@ -267,7 +257,7 @@ const RestaurantDetail: FC = () => {
                   return false;
                 }}
                 renderOption={(props, option) => (
-                  <li {...props}>{option.tag}</li>
+                  <li {...props}>{option.tag_name}</li>
                 )}
                 renderInput={(params) => (
                   <TextFieldInput

@@ -24,7 +24,7 @@ const Restaurant = () => {
     let subscribed = true;
     queryRestaurants().then((response) => {
       if (subscribed && response) {
-        setRestaurants(response.data);
+        setRestaurants(response);
       }
     });
 
@@ -66,17 +66,9 @@ const Restaurant = () => {
         <FlipMove typeName="div" className="restaurant-cardList">
           {restaurants &&
             restaurants.map((card) => (
-              <RestaurantCard
-                key={card.google_map_url}
-                {...card}
-                // selectedRestaurant={selectedRestaurant}
-                // setSelectedRestaurant={setSelectedRestaurant}
-                // setShowConfirmDeleteRestaurantModal={
-                //   setShowConfirmDeleteRestaurantModal
-                // }
-              />
+              <RestaurantCard key={card.google_map_url} {...card} />
             ))}
-          {!restaurants && <div className="restaurant-card-loading" />}
+          {!!!restaurants.length && <div className="restaurant-card-loading" />}
         </FlipMove>
       </div>
       <SortRestaurantModal />
